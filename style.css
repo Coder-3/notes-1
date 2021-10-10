@@ -1,0 +1,40 @@
+* {
+  font-family: monospace;
+  color: #303030;
+}
+
+h1 {
+  color: #202020;
+}
+
+#notes {
+  display: flex;
+  height: 100vh;
+}
+
+#noteTitles {
+  width: 250px;
+  margin-right: 25px;
+  padding-right: 25px;
+  border-right: 1px solid gainsboro;
+}
+
+#noteContent {
+  width: 700px;
+}
+
+#addNote {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 50px;
+}
+
+#addNote > button {
+  margin-top: 15px;
+}
+
+li {
+  cursor: pointer;
+  text-decoration: underline;
+  margin-bottom: 10px;
+}
