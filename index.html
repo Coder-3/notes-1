@@ -10,22 +10,25 @@
 
 <body>
 	<h1>notes app</h1>
-  <div id="addNote">
-    title:
-    <input type="text" id="newNoteTitle" />
+	<div id="addNote">
+		title:
+		<input type="text" id="newNoteTitle" />
     content:
     <textarea id="newNoteContent"></textarea>
     <button onclick="addNote()">add note</button>
   </div>
 	<div id="notes">
 		<div id="noteTitles">
+      <input type="text" oninput="renderTitles()" id="searchNotes" />
 			<ul id="titlesList">
 			</ul>
 		</div>
 		<div id="noteContent">
 		</div>
 	</div>
-	<script src="script.js">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.22.0/axios.min.js">
+  </script>
+  <script src="script.js">
 	</script>
 </body>
 

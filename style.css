@@ -19,8 +19,16 @@ h1 {
   border-right: 1px solid gainsboro;
 }
 
+#searchNotes {
+  margin-left: 10px;
+}
+
 #noteContent {
   width: 700px;
+}
+
+#noteContent button {
+  margin-top: 25px;
 }
 
 #addNote {
