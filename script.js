@@ -1,13 +1,16 @@
 let notes = [
   {
+    id: 1,
     title: 'note one',
     content: 'ONE ONE Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sollicitudin neque ultrices tristique sollicitudin. Nulla facilisi. Vivamus ut tempor ipsum, et ultricies elit. Curabitur facilisis fringilla blandit. Donec et mi laoreet, aliquet neque sed, mattis nibh. Nam et ligula risus. Donec ac risus id est efficitur porttitor et quis ante. Donec eget velit id dui tempor vehicula vitae at massa.'
   },
   {
+    id: 2,
     title: 'really long note title example so that I can see how it renders',
     content: 'TWO TWO Proin finibus diam nec metus consequat, eu tristique justo pulvinar. Nulla tincidunt lobortis lacus, vitae ultricies purus laoreet et. Donec vitae quam a nisl viverra porta. Phasellus vitae tincidunt risus. Sed imperdiet metus et egestas laoreet. Sed quis libero vehicula, commodo justo non, sollicitudin purus. Vestibulum sodales, ligula et scelerisque pellentesque, neque diam euismod lacus, nec viverra ex ipsum a diam. In hac habitasse platea dictumst. Integer eget dapibus mauris. Suspendisse eu arcu maximus, blandit leo eget, pulvinar eros.'
   },
   {
+    id: 3,
     title: 'rice noodle recipe',
     content: 'THREE THREE Nam malesuada ligula sed convallis pellentesque. In eget justo aliquet, sollicitudin leo sed, accumsan nisl. Phasellus maximus suscipit nulla, a bibendum justo dignissim nec. Nam quis turpis malesuada, sollicitudin nulla quis, convallis purus. Vivamus commodo vitae libero ac interdum. Quisque accumsan laoreet iaculis. Nam tristique pellentesque semper. Quisque congue ipsum at porta hendrerit. Pellentesque placerat eget urna in cursus. Aliquam dignissim vitae velit sed pharetra. Vestibulum eu massa laoreet, tincidunt nisl ut, eleifend ex. Integer accumsan, libero quis mattis lacinia, orci augue ultricies mi, sed interdum ex ligula sollicitudin nibh. Sed ante neque, iaculis vel gravida eu, molestie vel diam. Fusce maximus condimentum auctor. Morbi a condimentum dui.'
   }
@@ -50,12 +53,19 @@ const renderNoteContent = () => {
   contentContainer.appendChild(header)
   contentContainer.appendChild(document.createTextNode(notes[selectedNote].content))
 
-  const deleteButtonContainer = document.createElement('div')
+  const buttonContainer = document.createElement('div')
+
   const deleteNoteButton = document.createElement('button')
   deleteNoteButton.innerHTML = 'delete'
   deleteNoteButton.onclick = () => deleteNote()
-  deleteButtonContainer.appendChild(deleteNoteButton)
-  contentContainer.appendChild(deleteButtonContainer)
+  buttonContainer.appendChild(deleteNoteButton)
+
+  const editNoteButton = document.createElement('button')
+  editNoteButton.innerHTML = 'edit'
+  editNoteButton.onclick = () => editNote()
+  buttonContainer.appendChild(editNoteButton)
+
+  contentContainer.appendChild(buttonContainer)
 }
 
 const addNote = () => {
@@ -63,6 +73,7 @@ const addNote = () => {
   const contentElement = document.getElementById('newNoteContent')
 
   const newNote = {
+    id: Math.floor(Math.random() * 10010101),
     title: titleElement.value,
     content: contentElement.value
   }
@@ -81,6 +92,43 @@ const deleteNote = () => {
   renderTitles()
   renderNoteContent()
 }
+
+const editNote = () => {
+  let noteTitleInputElement = document.getElementById('newNoteTitle')
+  let noteContentInputElement = document.getElementById('newNoteContent')
+  let currentNoteTitle = notes[selectedNote].title
+  let currentNoteContent = notes[selectedNote].content
+
+  noteTitleInputElement.value = currentNoteTitle
+  noteContentInputElement.value = currentNoteContent
+}
+
+const submitEditedNote = () => {
+  let addNoteContainerElement = document.getElementById('addNote')
+
+  let currentNoteId = notes[selectedNote].id
+  let noteTitleInputElement = document.getElementById('newNoteTitle')
+  let noteContentInputElement = document.getElementById('newNoteContent')
+
+  noteTitleInputElement.value = ''
+  noteContentInputElement.value = ''
+
+  // notes = notes.map(note => note.id === currentNoteId ? )
+}
+
+// //JSON placeholder is a simple placeholder REST API that returns JSON
+// fetch("https://jsonplaceholder.typicode.com/todos/1")
+//     .then(response=> {
+//         //response.json() turns the response objects body into JSON 
+//         //response.json() returns a JS promise
+//         //Use response.text() to turn your response object to text
+//         return response.json()
+//     })
+//     .then(data=> {
+//         //We have successfully made a GET request!
+//         //Log the data to the console:
+//         resTxt.innerText = JSON.stringify(data, null, 2);
+//     })
 
 renderTitles()
 renderNoteContent()
