@@ -15,7 +15,7 @@
 		<input type="text" id="newNoteTitle" />
     content:
     <textarea id="newNoteContent"></textarea>
-    <button onclick="addNote()">add note</button>
+    <button onclick="handleAddNote()" id="addNoteButton">add note</button>
   </div>
 	<div id="notes">
 		<div id="noteTitles">
@@ -30,6 +30,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.22.0/axios.min.js">
   </script>
   <script src="script.js">
+	</script>
+  <script src="noteService.js">
 	</script>
 </body>
 

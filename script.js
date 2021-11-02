@@ -1,28 +1,10 @@
-let notes = [
-  {
-    id: 1,
-    title: 'note one',
-    content: 'ONE ONE Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sollicitudin neque ultrices tristique sollicitudin. Nulla facilisi. Vivamus ut tempor ipsum, et ultricies elit. Curabitur facilisis fringilla blandit. Donec et mi laoreet, aliquet neque sed, mattis nibh. Nam et ligula risus. Donec ac risus id est efficitur porttitor et quis ante. Donec eget velit id dui tempor vehicula vitae at massa.'
-  },
-  {
-    id: 2,
-    title: 'really long note title example so that I can see how it renders',
-    content: 'TWO TWO Proin finibus diam nec metus consequat, eu tristique justo pulvinar. Nulla tincidunt lobortis lacus, vitae ultricies purus laoreet et. Donec vitae quam a nisl viverra porta. Phasellus vitae tincidunt risus. Sed imperdiet metus et egestas laoreet. Sed quis libero vehicula, commodo justo non, sollicitudin purus. Vestibulum sodales, ligula et scelerisque pellentesque, neque diam euismod lacus, nec viverra ex ipsum a diam. In hac habitasse platea dictumst. Integer eget dapibus mauris. Suspendisse eu arcu maximus, blandit leo eget, pulvinar eros.'
-  },
-  {
-    id: 3,
-    title: 'rice noodle recipe',
-    content: 'THREE THREE Nam malesuada ligula sed convallis pellentesque. In eget justo aliquet, sollicitudin leo sed, accumsan nisl. Phasellus maximus suscipit nulla, a bibendum justo dignissim nec. Nam quis turpis malesuada, sollicitudin nulla quis, convallis purus. Vivamus commodo vitae libero ac interdum. Quisque accumsan laoreet iaculis. Nam tristique pellentesque semper. Quisque congue ipsum at porta hendrerit. Pellentesque placerat eget urna in cursus. Aliquam dignissim vitae velit sed pharetra. Vestibulum eu massa laoreet, tincidunt nisl ut, eleifend ex. Integer accumsan, libero quis mattis lacinia, orci augue ultricies mi, sed interdum ex ligula sollicitudin nibh. Sed ante neque, iaculis vel gravida eu, molestie vel diam. Fusce maximus condimentum auctor. Morbi a condimentum dui.'
-  }
-]
-
-let selectedNote = 0
+let notes = []
 
 const filteredNotes = () => {
   let searchString = document.getElementById('searchNotes').value
 
   if (searchString) {
-    return notes.filter(note => note.title.includes(searchString))
+    return notes.filter(note => note.title.toLowerCase().includes(searchString.toLowerCase()))
   }
 
   return notes
@@ -31,49 +13,47 @@ const filteredNotes = () => {
 const renderTitles = () => {
   let list = document.getElementById('titlesList')
   list.innerHTML = ''
+
   filteredNotes().forEach((note, index) => {
     let item = document.createElement('li')
     item.appendChild(document.createTextNode(note.title))
     item.addEventListener('click', () => {
-      selectedNote = index
-      renderNoteContent()
+      renderNoteContent(note)
     })
     list.appendChild(item)
   })
 }
 
-const renderNoteContent = () => {
+const renderNoteContent = note => {
   let contentContainer = document.getElementById('noteContent')
   contentContainer.innerHTML = ''
 
   let header = document.createElement('h2')
-  const noteTitle = document.createTextNode(notes[selectedNote].title)
+  const noteTitle = document.createTextNode(note.title)
   header.appendChild(noteTitle)
 
   contentContainer.appendChild(header)
-  contentContainer.appendChild(document.createTextNode(notes[selectedNote].content))
+  contentContainer.appendChild(document.createTextNode(note.content))
 
   const buttonContainer = document.createElement('div')
 
   const deleteNoteButton = document.createElement('button')
   deleteNoteButton.innerHTML = 'delete'
-  deleteNoteButton.onclick = () => deleteNote()
+  deleteNoteButton.onclick = () => handleDeleteNote(note.id)
   buttonContainer.appendChild(deleteNoteButton)
 
   const editNoteButton = document.createElement('button')
   editNoteButton.innerHTML = 'edit'
-  editNoteButton.onclick = () => editNote()
+  editNoteButton.onclick = () => editNote(note)
   buttonContainer.appendChild(editNoteButton)
 
   contentContainer.appendChild(buttonContainer)
 }
 
-const addNote = () => {
+const handleAddNote = async () => {
   const titleElement = document.getElementById('newNoteTitle')
   const contentElement = document.getElementById('newNoteContent')
-
-  const newNote = {
-    id: Math.floor(Math.random() * 10010101),
+  const newNoteObject = {
     title: titleElement.value,
     content: contentElement.value
   }
@@ -81,54 +61,53 @@ const addNote = () => {
   titleElement.value = ''
   contentElement.value = ''
 
-  notes = notes.concat(newNote)
-  renderTitles()
-  renderNoteContent()
+  await addNoteService(newNoteObject)
+
+  await initialize()
 }
 
-const deleteNote = () => {
-  notes.splice(selectedNote, 1)
-  selectedNote = 0
-  renderTitles()
-  renderNoteContent()
+const handleDeleteNote = async noteId => {
+  await deleteNoteService(noteId)
+  initialize()
 }
 
-const editNote = () => {
+const handleEditNote = async noteId => {
   let noteTitleInputElement = document.getElementById('newNoteTitle')
   let noteContentInputElement = document.getElementById('newNoteContent')
-  let currentNoteTitle = notes[selectedNote].title
-  let currentNoteContent = notes[selectedNote].content
+  let addNoteButtonElement = document.getElementById('addNoteButton')
 
-  noteTitleInputElement.value = currentNoteTitle
-  noteContentInputElement.value = currentNoteContent
-}
-
-const submitEditedNote = () => {
-  let addNoteContainerElement = document.getElementById('addNote')
-
-  let currentNoteId = notes[selectedNote].id
-  let noteTitleInputElement = document.getElementById('newNoteTitle')
-  let noteContentInputElement = document.getElementById('newNoteContent')
+  let editedNoteObject = {
+    title: noteTitleInputElement.value,
+    content: noteContentInputElement.value
+  }
 
   noteTitleInputElement.value = ''
   noteContentInputElement.value = ''
 
-  // notes = notes.map(note => note.id === currentNoteId ? )
+  addNoteButtonElement.innerHTML = 'add note'
+  addNoteButtonElement.onclick = () => handleAddNote()
+
+  await editNoteService(noteId, editedNoteObject)
+
+  await initialize()
 }
 
-// //JSON placeholder is a simple placeholder REST API that returns JSON
-// fetch("https://jsonplaceholder.typicode.com/todos/1")
-//     .then(response=> {
-//         //response.json() turns the response objects body into JSON 
-//         //response.json() returns a JS promise
-//         //Use response.text() to turn your response object to text
-//         return response.json()
-//     })
-//     .then(data=> {
-//         //We have successfully made a GET request!
-//         //Log the data to the console:
-//         resTxt.innerText = JSON.stringify(data, null, 2);
-//     })
+const editNote = note => {
+  let noteTitleInputElement = document.getElementById('newNoteTitle')
+  let noteContentInputElement = document.getElementById('newNoteContent')
+  let addNoteButtonElement = document.getElementById('addNoteButton')
 
-renderTitles()
-renderNoteContent()
+  noteTitleInputElement.value = note.title
+  noteContentInputElement.value = note.content
+
+  addNoteButtonElement.innerHTML = 'save edit'
+  addNoteButtonElement.onclick = () => handleEditNote(note.id)
+}
+
+const initialize = async () => {
+  notes = await getNotesService()
+  renderTitles()
+  renderNoteContent(notes[0])
+}
+
+window.onload = () => initialize()
